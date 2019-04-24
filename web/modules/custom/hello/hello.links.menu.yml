@@ -1,0 +1,14 @@
+hello.hello:
+  title: 'Hello!'
+  route_name: hello.hello
+  description: hello.hello
+  menu_name: main
+  weight: 1
+
+hello.hello2:
+  title: 'ResetUserStat'
+  route_name: hello.confighello
+  description: hello.confighello
+  menu_name: admin
+  parent: entity.menu.collection
+  weight: 1

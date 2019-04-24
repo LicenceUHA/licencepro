@@ -1,0 +1,89 @@
+<?php
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\User\UserInterface;
+
+
+// Implements hook_help().
+function hello_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+
+    // Main module help for the block module.
+    
+    case 'help.page.block':
+      return '<p>' . t('Blocks are boxes of content rendered into an area, or region, of a web page. The default theme Bartik, for example, implements the regions "Sidebar first", "Sidebar second", "Featured", "Content", "Header", "Footer", etc., and a block may appear in any one of these areas. The <a href=":blocks">blocks administration page</a> provides a drag-and-drop interface for assigning a block to a region, and for controlling the order of blocks within regions.', array(
+        ':blocks' => \Drupal::url('block.admin_display'),
+      )) . '</p>';
+
+    // Help for another path in the block module.
+    case 'block.admin_display':
+      return '<p>' . t('This page provides a drag-and-drop interface for assigning a block to a region, and for controlling the order of blocks within regions. Since not all themes implement the same regions, or display regions in the same way, blocks are positioned on a per-theme basis. Remember that your changes will not be saved until you click the <em>Save blocks</em> button at the bottom of the page.') . '</p>';
+  }
+}
+
+// Implements Hook_cron()
+function hello_cron() {
+  $time = \Drupal::service('datetime.time')->getCurrentTime();
+  $days = \Drupal::config('hello.settings')->get('purge_week_number');
+  $date_fin = $time - ($days * 86400);
+  \Drupal::database()->delete('hello_user_statistics')
+  ->condition('time', $date_fin, '<')
+  ->execute();
+  
+}
+
+  // Implements hook_user_login().
+  function hello_user_login(UserInterface $account) {
+    // Fonction t().
+ // Il existe 3 types de jetons indiquant comment on substitue les variables.
+ // ! : le contenu de la variable est interprété.
+ // @ : le contenu de la variable est échappé.
+ // % : le contenu de la variable est échappé et la balise <em> est ajoutée.
+ \Drupal::messenger()->addMessage(t('Welcome dear %name!',
+ ['%name' => $account->getAccountName()]
+));
+\drupal::database()->insert('hello_user_statistics')
+    ->fields([
+      'uid' => $account->id(),
+      'action' => '1',
+      'time' => REQUEST_TIME,
+    ])
+    ->execute();
+}
+
+ // Implements hook_user_logout().
+ function hello_user_logout(AccountProxyInterface $account) {
+  \drupal::database()->insert('hello_user_statistics')
+    ->fields([
+      'uid' => $account->id(),
+      'action' => '0',
+    'time' => REQUEST_TIME,
+    ])
+    ->execute();
+}
+
+// Implements hook_theme().
+function hello_theme($existing, $type, $theme, $path){
+  return array(
+    'hello_user_connexion' => [
+      'template' => 'hello-user-connexion',
+      'variables' => [
+        'user' => Null,
+        'count' => NULL,
+      ],
+    ],
+  );
+}
+
+/**
+ * Implements hook_page_attachments().
+ * @param array $page
+ */
+function hello_page_attachments(array &$page) {
+  $page['#attached']['library'][] = 'hello/hello.style';
+}
+
+

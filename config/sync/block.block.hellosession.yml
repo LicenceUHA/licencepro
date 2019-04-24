@@ -1,0 +1,20 @@
+uuid: 55a1f88e-7537-4d79-8d19-81348693cafb
+langcode: en
+status: true
+dependencies:
+  module:
+    - hello
+  theme:
+    - bartik
+id: hellosession
+theme: bartik
+region: sidebar_second
+weight: 0
+provider: null
+plugin: hellosession_block
+settings:
+  id: hellosession_block
+  label: Hellosession!
+  provider: hello
+  label_display: visible
+visibility: {  }

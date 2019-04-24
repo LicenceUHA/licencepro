@@ -1,0 +1,50 @@
+hello.hello:
+  path: '/hello/{param}'
+  defaults:
+    _title: 'Hello'
+    _controller: '\Drupal\hello\controller\HelloController::content'
+    param: 'noparam'
+  requirements:
+    _access: 'TRUE'
+
+hello.node_list:
+  path: '/hello/node-list/{nodetype}'
+  defaults:
+    _title: 'Node List'
+    _controller: '\Drupal\hello\controller\node_listController::content'
+    nodetype: ''
+  requirements:
+    _access: 'TRUE'
+
+hello.statistics:
+  path: '/user/{user}/statistics'
+  defaults:
+    _title: 'Connection'
+    _controller: '\Drupal\hello\controller\user_statisticsController::content'
+  requirements:
+    _access: 'TRUE'
+    user: '\d+'
+
+hello.form:
+  path: '/hello-form'
+  defaults:
+    _title: 'hello form'
+    _form: '\Drupal\hello\Form\CalculatorForm'
+  requirements:
+    _access: 'TRUE'
+
+hello.confighello:
+  path: '/admin/config/hellostatconfig'
+  defaults:
+    _title: 'userstat'
+    _form: '\Drupal\hello\Form\Hellostatconfig'
+  requirements:
+    _access: 'TRUE'
+
+#hello.user_statistics:
+ # path: '/user/{user}/statistics'
+  #defaults:
+  #  _title: 'Connection statistics'
+   # _controller: '\Drupal\hello\Controller\UserStatisticsController::content'
+ # requirements:
+  #  _access_hello: '48'
